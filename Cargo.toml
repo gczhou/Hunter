@@ -1,7 +1,11 @@
 [package]
 name = "rockets"
+description = "Simple test framework for Corsac Kuafu."
 version = "0.1.0"
 authors = ["gczhou <3106174238@qq.com>"]
 edition = "2018"
 
 [dependencies]
+serde = "1.0.79"
+serde_json = "1.0.31"
+hyper = "0.12.10"
