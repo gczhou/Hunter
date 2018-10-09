@@ -1,0 +1,70 @@
+name: hunter
+version: "1.0"
+about: HUNTER Corsac Develop Tool.
+
+# All Args must be defined in the 'args:' list where the name of the arg, is the
+# key to a Hash object
+args:
+    - config:
+        help: Sets a custom config file, default 'default.conf'
+        long: config
+        value_names:
+            - FILE
+        takes_value: true
+    - host:
+        help: Set the node ip address, default '127.0.0.1'
+        long: host
+        value_names:
+            - IP
+        takes_value: true
+    - port:
+        help: Set the node ip port, default '4000'
+        long: port
+        value_names:
+            - PORT
+        takes_value: true
+        requires:
+            - host
+
+# All subcommands must be listed in the 'subcommand:' object, where the key to
+# the list is the name of the subcommand, and all settings for that command are
+# are part of a Hash object
+subcommands:
+    # The name of this subcommand will be 'subcmd' which can be accessed in your
+    # Rust code later
+    - send_tx:
+        about: send transaction
+        args:
+            - transaction:
+                help: transaction
+                index: 1
+                required: true
+                takes_value: true
+    - send_raw_tx:
+        about: send raw transaction
+        args:
+            - raw:
+                help: raw transaction
+                index: 1
+                required: true
+                takes_value: true
+    - get_receipt_by_hash:
+        about: get receipt by hash
+        args:
+            - hash:
+                help: transaction hash
+                index: 1
+                required: true
+                takes_value: true
+    - get_block_by_number:
+        about: get block by number
+        args:
+            - number:
+                help: block number
+                index: 1
+                required: true
+                takes_value: true
+    - get_blocknumber:
+        about: get block number of chain
+    - get_chainstate:
+        about: get chain state of chain

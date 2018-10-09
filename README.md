@@ -1,2 +1,2 @@
-# Rockets
+# Hunter
 kuafu test case
