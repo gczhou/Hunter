@@ -32,18 +32,17 @@ args:
 subcommands:
     # The name of this subcommand will be 'subcmd' which can be accessed in your
     # Rust code later
-    - send_tx:
+    - send_transaction:
         about: send transaction
         args:
             - transaction:
                 help: transaction
                 index: 1
-                required: true
                 takes_value: true
-    - send_raw_tx:
+    - send_raw_transaction:
         about: send raw transaction
         args:
-            - raw:
+            - transaction:
                 help: raw transaction
                 index: 1
                 required: true
