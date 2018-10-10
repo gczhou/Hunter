@@ -1,48 +1,88 @@
-use super::{Transaction, U256, Address};
+use super::{SignedTransaction, UnverifiedTransaction, Transaction};
+use super::{U256, Address, RegionID};
 
 #[derive(Debug, Default, Clone)]
 pub struct TransactionBuilder {
-	nonce: U256,
-	gas_price: U256,
-	gas: U256,
-	sender: Address,
-	mem_usage: usize,
+    /// RegionID 
+    region_id: RegionID,
+    /// Nonce.
+    nonce: U256,
+    /// Block limit.
+    block_limit: BlockNumber,
+    /// Action, can be either call or contract create.
+    action: Action,
+    /// Transaction data.
+    data: Bytes,
+}
+
+impl Default for TransactionBuilder {
+    fn default() -> Self {
+        TransactionBuilder {
+			region_id: RegionID::default(),
+			nonce: 0,
+			block_limit: 1000,
+			action: Action::default(),
+			data: vec![],
+        }
+    }
 }
 
 impl TransactionBuilder {
-	pub fn tx(&self) -> Self {
-		self.clone()
-	}
+    pub fn new() -> Self {
+        Self::default()
+    }
 
-	pub fn nonce<T: Into<U256>>(mut self, nonce: T) -> Self {
-		self.nonce = nonce.into();
-		self
-	}
-
-	pub fn gas_price<T: Into<U256>>(mut self, gas_price: T) -> Self {
-		self.gas_price = gas_price.into();
-		self
-	}
-
-	pub fn sender<T: Into<Address>>(mut self, sender: T) -> Self {
-		self.sender = sender.into();
-		self
-	}
-
-	pub fn mem_usage(mut self, mem_usage: usize) -> Self {
-		self.mem_usage = mem_usage;
-		self
-	}
-
-	pub fn new(self) -> Transaction {
-		let hash = self.nonce ^ (U256::from(100) * self.gas_price) ^ (U256::from(100_000) * U256::from(self.sender.low_u64()));
+    pub fn build(&self) -> Transaction {
 		Transaction {
-			hash: hash.into(),
+			region_id: self.region_id,
 			nonce: self.nonce,
-			gas_price: self.gas_price,
-			gas: 21_000.into(),
-			sender: self.sender,
-			mem_usage: self.mem_usage,
+			block_limit: self.block_limit,
+			action: self.action,
+			data: self.data,
+		}
+    }
+
+	pub fn set_region_id(&mut self, region_id: RegionID) -> Self {
+		self.region_id = region_id;
+		self
+	}
+
+	pub fn set_nonce(&mut self, nonce: U256) -> Self {
+		self.nonce = nonce;
+		self
+	}
+
+	pub fn set_block_limit(&mut self, block_limit: BlockNumber) -> Self {
+		self.block_limit = block_limit;
+		self
+	}
+
+	pub set_action(&mut self, action: Action) -> Self {
+		self.action = action;
+		self
+	}
+
+	pub set_data(&mut self, data: Bytes) -> Self {
+		self.data = data;
+		self
+	}
+}
+
+pub struct UnverifiedTransactionBuilder {
+	/// Plain Transaction.
+    unsigned: Transaction,
+    /// signature of the transaction
+    seal: Bytes,
+    /// Hash of the transaction
+    hash: H256,
+}
+
+impl UnverifiedTransactionBuilder {
+	pub fn build(tx: Transaction, seal: Bytes, hash: H256) -> UnverifiedTransaction {
+		UnverifiedTransaction {
+			unsigned: Transaction,
+			seal: seal,
+			hash: hash,
 		}
 	}
 }

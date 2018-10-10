@@ -13,3 +13,4 @@ clap = {version = "~2.27.0", features = ["yaml"]}
 blockchain_types = { git = "http://zerda:zerda@192.168.2.149:9999/r/rust_corsac_libs/blockchain_types.git", branch="develop"}
 ethcore-bigint = { git="http://192.168.2.149:9999/r/rust_corsac_libs/bigint.git", features=["heapsizeof"]}
 rcrypto = { git = "http://zerda:zerda@192.168.2.149:9999/r/rust/rcrypto.git"}
+rlp = { git="http://192.168.2.149:9999/r/rust_corsac_libs/rlp.git"}

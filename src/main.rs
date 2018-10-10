@@ -3,6 +3,7 @@ extern crate serde_json;
 extern crate hyper;
 extern crate blockchain_types as types;
 extern crate ethcore_bigint as bigint;
+extern crate rlp;
 #[macro_use]
 extern crate clap;
 use clap::App;
