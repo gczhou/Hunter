@@ -86,3 +86,20 @@ impl UnverifiedTransactionBuilder {
 		}
 	}
 }
+
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct SignedTransactionBuilder {
+    transaction: UnverifiedTransaction,
+    sender: Address,
+    public: Option<H512>,
+}
+
+impl SignedTransactionBuilder {
+	pub fn build(tx: UnverifiedTransaction, sender: Address, public: Option<H512>) -> SignedTransaction {
+		SignedTransaction {
+			transaction: tx,
+			sender: sender,
+			public: public,
+		}
+	}
+}
