@@ -71,29 +71,15 @@ impl TransactionBuilder {
 	}
 }
 
-pub struct UnverifiedTransactionBuilder {
-	/// Plain Transaction.
-    unsigned: Transaction,
-    /// signature of the transaction
-    seal: Bytes,
-    /// Hash of the transaction
-    hash: H256,
-}
-
+pub struct UnverifiedTransactionBuilder;
 impl UnverifiedTransactionBuilder {
-	pub fn build(tx: Transaction) -> UnverifiedTransaction {
-		let utx = tx.with_rsv(U256::default(), U256::default(), 0);
+	pub fn build(tx: Transaction, r: U256, s: U256, v: u8) -> UnverifiedTransaction {
+		let utx = tx.with_rsv(r, s, v);
 		utx
 	}
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub struct SignedTransactionBuilder {
-    transaction: UnverifiedTransaction,
-    sender: Address,
-    public: Option<H512>,
-}
-
+pub struct SignedTransactionBuilder;
 impl SignedTransactionBuilder {
 	pub fn build(utx: UnverifiedTransaction) -> SignedTransaction {
 		SignedTransaction::new(utx).unwrap()

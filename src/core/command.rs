@@ -19,7 +19,7 @@ impl Command {
         let transaction: SignedTransaction;
         if tx_str == "DEFAULT_TX".to_string() {
             let tx = TransactionBuilder::new().build();
-            let utx = UnverifiedTransactionBuilder::build(tx);
+            let utx = UnverifiedTransactionBuilder::build(tx, U256::default(), U256::default(), 0u8);
             let st = SignedTransactionBuilder::build(utx);
             transaction = st;
         } else {
