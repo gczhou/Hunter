@@ -1,7 +1,10 @@
 use super::{SignedTransaction, UnverifiedTransaction, Transaction};
-use super::{U256, Address, RegionID};
+use super::{H256, H512, U256, Address, RegionID};
+use super::BlockNumber;
+use super::Action;
+use super::Bytes;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 pub struct TransactionBuilder {
     /// RegionID 
     region_id: RegionID,
@@ -19,7 +22,7 @@ impl Default for TransactionBuilder {
     fn default() -> Self {
         TransactionBuilder {
 			region_id: RegionID::default(),
-			nonce: 0,
+			nonce: U256::default(),
 			block_limit: 1000,
 			action: Action::default(),
 			data: vec![],
@@ -37,32 +40,32 @@ impl TransactionBuilder {
 			region_id: self.region_id,
 			nonce: self.nonce,
 			block_limit: self.block_limit,
-			action: self.action,
-			data: self.data,
+			action: self.action.clone(),
+			data: self.data.clone(),
 		}
     }
 
-	pub fn set_region_id(&mut self, region_id: RegionID) -> Self {
+	pub fn set_region_id(&mut self, region_id: RegionID) -> &mut Self {
 		self.region_id = region_id;
 		self
 	}
 
-	pub fn set_nonce(&mut self, nonce: U256) -> Self {
+	pub fn set_nonce(&mut self, nonce: U256) -> &mut Self {
 		self.nonce = nonce;
 		self
 	}
 
-	pub fn set_block_limit(&mut self, block_limit: BlockNumber) -> Self {
+	pub fn set_block_limit(&mut self, block_limit: BlockNumber) -> &mut Self {
 		self.block_limit = block_limit;
 		self
 	}
 
-	pub set_action(&mut self, action: Action) -> Self {
+	pub fn set_action(&mut self, action: Action) -> &mut Self {
 		self.action = action;
 		self
 	}
 
-	pub set_data(&mut self, data: Bytes) -> Self {
+	pub fn set_data(&mut self, data: Bytes) -> &mut Self {
 		self.data = data;
 		self
 	}
@@ -78,12 +81,9 @@ pub struct UnverifiedTransactionBuilder {
 }
 
 impl UnverifiedTransactionBuilder {
-	pub fn build(tx: Transaction, seal: Bytes, hash: H256) -> UnverifiedTransaction {
-		UnverifiedTransaction {
-			unsigned: Transaction,
-			seal: seal,
-			hash: hash,
-		}
+	pub fn build(tx: Transaction) -> UnverifiedTransaction {
+		let utx = tx.with_rsv(U256::default(), U256::default(), 0);
+		utx
 	}
 }
 
@@ -95,11 +95,7 @@ pub struct SignedTransactionBuilder {
 }
 
 impl SignedTransactionBuilder {
-	pub fn build(tx: UnverifiedTransaction, sender: Address, public: Option<H512>) -> SignedTransaction {
-		SignedTransaction {
-			transaction: tx,
-			sender: sender,
-			public: public,
-		}
+	pub fn build(utx: UnverifiedTransaction) -> SignedTransaction {
+		SignedTransaction::new(utx).unwrap()
 	}
 }

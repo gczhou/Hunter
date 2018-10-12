@@ -7,14 +7,13 @@ extern crate rlp;
 #[macro_use]
 extern crate clap;
 use clap::App;
+extern crate yaml_rust;
 
 mod case;
 mod core;
 
-mod config;
-
-use self::core::Commands;
-use self::config::Config;
+use self::core::Command;
+use self::core::Config;
 
 fn main() {
     // cli.yaml文件需要放置在当前目录下
@@ -27,16 +26,19 @@ fn main() {
     let config_file = matches.value_of("config").unwrap_or("config.yaml");
     println!("Value for config: {}", config_file);
     let mut config = Config::new(config_file.to_string());
+    println!("======================================");
     println!("Value for config: {:?}, {:?}", std::env::current_dir(), config);
 
     config.init_params();
     println!("Value for config: {:?}", config);
 
+    let command = Command::new(config);
+
     match matches.subcommand() {
         ("send_transaction", Some(sub_match)) => {
             let tx = sub_match.value_of("transaction").unwrap_or("");
             println!("send_tx {:?}", tx);
-            Commands::send_transaction(tx.to_string());
+            command.send_transaction(tx.to_string());
         },
         ("send_raw_tx", Some(sub_match)) => {
             let raw_tx = sub_match.value_of("transaction").unwrap();
