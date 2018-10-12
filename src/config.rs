@@ -29,6 +29,7 @@ impl Config {
     }
 
     pub fn init_params(&mut self) {
+        println!("path {:?}", self.path.as_path());
         let mut fd = File::open(self.path.as_path());
         println!("fd {:?}", fd);
         match fd {

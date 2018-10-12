@@ -24,10 +24,10 @@ fn main() {
     //println!("matches {:?}", matches);
 
     // Gets a value for config if supplied by user, or defaults to "default.conf"
-    let config_file = matches.value_of("config").unwrap_or("./config.yaml");
+    let config_file = matches.value_of("config").unwrap_or("config.yaml");
     println!("Value for config: {}", config_file);
     let mut config = Config::new(config_file.to_string());
-    println!("Value for config: {:?}", config);
+    println!("Value for config: {:?}, {:?}", std::env::current_dir(), config);
 
     config.init_params();
     println!("Value for config: {:?}", config);
