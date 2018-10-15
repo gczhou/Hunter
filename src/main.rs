@@ -4,6 +4,7 @@ extern crate hyper;
 extern crate blockchain_types as types;
 extern crate ethcore_bigint as bigint;
 extern crate rlp;
+extern crate rcrypto;
 #[macro_use]
 extern crate clap;
 use clap::App;
@@ -26,7 +27,7 @@ fn main() {
     let config_file = matches.value_of("config").unwrap_or("config.yaml");
     println!("Value for config: {}", config_file);
     let mut config = Config::new(config_file.to_string());
-    println!("======================================");
+    println!("=============================================================");
     println!("Value for config: {:?}, {:?}", std::env::current_dir(), config);
 
     config.init_params();
@@ -36,8 +37,8 @@ fn main() {
 
     match matches.subcommand() {
         ("send_transaction", Some(sub_match)) => {
-            let tx = sub_match.value_of("transaction").unwrap_or("");
-            println!("send_tx {:?}", tx);
+            let tx = sub_match.value_of("transaction").unwrap_or("DEFAULT_TX");
+            println!("send_transaction {:?}", tx);
             command.send_transaction(tx.to_string());
         },
         ("send_raw_tx", Some(sub_match)) => {

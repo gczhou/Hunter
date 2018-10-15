@@ -3,6 +3,7 @@ use super::{H256, H512, U256, Address, RegionID};
 use super::BlockNumber;
 use super::Action;
 use super::Bytes;
+use super::Secret;
 
 #[derive(Debug, Clone)]
 pub struct TransactionBuilder {
@@ -73,8 +74,11 @@ impl TransactionBuilder {
 
 pub struct UnverifiedTransactionBuilder;
 impl UnverifiedTransactionBuilder {
-	pub fn build(tx: Transaction, r: U256, s: U256, v: u8) -> UnverifiedTransaction {
-		let utx = tx.with_rsv(r, s, v);
+	pub fn build(tx: Transaction, secret: &mut Secret) -> UnverifiedTransaction {
+		let hash = tx.hash();
+		let sign = secret.key_pair.sign(&hash).expect("Transaction signature fail.");
+		println!("Key Pair {:?}", &sign[..]);
+		let utx = tx.with_rsv(U256::from(&sign[0..31]), U256::from(&sign[32..63]), sign[64]);
 		utx
 	}
 }

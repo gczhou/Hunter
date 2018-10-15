@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 
+use super::Secret;
 use super::*;
 
 pub struct Command {
@@ -16,12 +17,15 @@ impl Command {
 
 impl Command {
     pub fn send_transaction(&self, tx_str: String) {
+        let mut secret = Secret::new(self.config.private_key);
+        println!("private key {:?}", self.config.private_key);
         let transaction: SignedTransaction;
         if tx_str == "DEFAULT_TX".to_string() {
             let tx = TransactionBuilder::new().build();
-            let utx = UnverifiedTransactionBuilder::build(tx, U256::default(), U256::default(), 0u8);
+            let utx = UnverifiedTransactionBuilder::build(tx, &mut secret);
             let st = SignedTransactionBuilder::build(utx);
             transaction = st;
+            println!("transaction {:?}", transaction);
         } else {
             //
             //transaction = st;
