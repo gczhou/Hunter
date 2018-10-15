@@ -5,6 +5,8 @@ use super::Action;
 use super::Bytes;
 use super::Secret;
 
+use std::ops::Deref;
+
 #[derive(Debug, Clone)]
 pub struct TransactionBuilder {
     /// RegionID 
@@ -74,11 +76,21 @@ impl TransactionBuilder {
 
 pub struct UnverifiedTransactionBuilder;
 impl UnverifiedTransactionBuilder {
-	pub fn build(tx: Transaction, secret: &mut Secret) -> UnverifiedTransaction {
+	pub fn build(tx: Transaction, secret: &Secret) -> UnverifiedTransaction {
 		let hash = tx.hash();
-		let sign = secret.key_pair.sign(&hash).expect("Transaction signature fail.");
-		println!("Key Pair {:?}", &sign[..]);
-		let utx = tx.with_rsv(U256::from(&sign[0..31]), U256::from(&sign[32..63]), sign[64]);
+		println!("=============== Hash {:?}", hash);
+		let sign = secret.key_pair.sign(&hash).expect("transaction signature fail.");
+		//println!("Command Secret {:?} {:?}", secret.key_pair.get_privatekey_hex(), secret.key_pair.get_publickey());
+		println!("Signature {:?}", &sign[..]);
+		let utx = tx.with_rsv(U256::from(&sign[0..32]), U256::from(&sign[32..64]), sign[64] as u8);
+		match utx.recover_public_and_sender() {
+			Ok((public, sender)) => {
+				println!("Public {:?} Sender {:?}", public, sender);
+			},
+			Err(err) => {
+				println!("err: {:?}", err);
+			},
+		}
 		utx
 	}
 }
@@ -86,6 +98,15 @@ impl UnverifiedTransactionBuilder {
 pub struct SignedTransactionBuilder;
 impl SignedTransactionBuilder {
 	pub fn build(utx: UnverifiedTransaction) -> SignedTransaction {
-		SignedTransaction::new(utx).unwrap()
+		println!("UnverifiedTransaction {:?} Unsigned {:?}", utx, utx.deref());
+		match SignedTransaction::new(utx) {
+			Ok(st) => {
+				st
+			},
+			Err(err) => {
+				println!("Error info: {:?}", err);
+				panic!("panic")
+			}
+		}
 	}
 }
