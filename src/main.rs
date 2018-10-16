@@ -1,5 +1,7 @@
-extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 extern crate serde_json;
+extern crate serde;
 extern crate hyper;
 extern crate blockchain_types as types;
 extern crate ethcore_bigint as bigint;
@@ -9,12 +11,16 @@ extern crate rcrypto;
 extern crate clap;
 use clap::App;
 extern crate yaml_rust;
+extern crate rustc_hex;
 
 mod case;
 mod core;
+pub mod jsontypes;
 
 use self::core::Command;
 use self::core::Config;
+
+pub use self::jsontypes::*;
 
 fn main() {
     // cli.yaml文件需要放置在当前目录下

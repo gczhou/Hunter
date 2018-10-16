@@ -4,8 +4,9 @@ use super::Secret;
 use super::Config;
 use super::Utils;
 use super::{SignedTransaction};
-use super::{UnverifiedTransactionBuilder, SignedTransactionBuilder, TransactionBuilder};
-use super::U256;
+use super::{UnverifiedTransactionBuilder, SignedTransactionBuilder, TransactionBuilder, TransactionRequest};
+use super::Uint256;
+use super::serde_json;
 
 const BLOCK_LIMIT: u64 = 1000;
 
@@ -27,20 +28,21 @@ impl Command {
 
 impl Command {
     pub fn send_transaction(&self, tx_str: String) {
-        let transaction: SignedTransaction;
         if tx_str == "DEFAULT_TX".to_string() {
             let block_number = Utils::get_block_number();
             let tx = TransactionBuilder::new()
                                     .set_block_limit(block_number + BLOCK_LIMIT)
-                                    .set_nonce(U256::default())
+                                    .set_nonce(Uint256::default())
                                     .build();
 
-            let utx = UnverifiedTransactionBuilder::build(tx, &self.secret);
+            let transaction_request = TransactionRequest::new(tx, &self.secret);
+            //let utx = UnverifiedTransactionBuilder::build(tx, &self.secret);
 
-            let st = SignedTransactionBuilder::build(utx);
+            //let st = SignedTransactionBuilder::build(utx);
+            let request = serde_json::to_string(&transaction_request).unwrap();
 
-            transaction = st;
-            println!("transaction {:?}", transaction);
+            //transaction = st;
+            println!("transaction {:?}", request);
         } else {
             //
             //transaction = st;

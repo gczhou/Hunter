@@ -5,7 +5,7 @@ use yaml_rust::Yaml;
 use yaml_rust::YamlLoader;
 use std::str::FromStr;
 
-use super::{Address, H256};
+use super::{Address, Hash256};
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -15,7 +15,7 @@ pub struct Config {
     pub port: String,
 
     pub sender : Address,
-    pub private_key : H256,
+    pub private_key : Hash256,
 }
 
 impl Config {
@@ -27,7 +27,7 @@ impl Config {
             port: "4000".to_string(),
 
             sender: Address::default(),
-            private_key: H256::default(),
+            private_key: Hash256::default(),
         }
     }
 
@@ -55,6 +55,6 @@ impl Config {
         self.host = config_contents["host"].clone().into_string().expect("get host error");
         self.port = config_contents["port"].clone().into_i64().expect("get port error").to_string();
         self.sender = Address::from_str(&config_contents["sender"].clone().into_string().expect("get sender error")).expect("address trans error");
-        self.private_key = H256::from_str(&config_contents["private_key"].clone().into_string().expect("get private key error")).expect("private key trans error");
+        self.private_key = Hash256::from_str(&config_contents["private_key"].clone().into_string().expect("get private key error")).expect("private key trans error");
     }
 }
